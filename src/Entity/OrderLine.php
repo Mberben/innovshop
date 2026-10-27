@@ -27,9 +27,11 @@ class OrderLine
     private ?Order $customerOrder = null;
 
     #[ORM\ManyToOne(inversedBy: 'orderLines')]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Product $product = null;
 
     #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?ProductOption $productOption = null;
 
     public function getId(): ?int

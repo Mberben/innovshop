@@ -63,6 +63,7 @@ class Product
         $this->images = new ArrayCollection();
         $this->options = new ArrayCollection();
         $this->orderLines = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int

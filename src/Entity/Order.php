@@ -57,6 +57,7 @@ class Order
     public function __construct()
     {
         $this->orderLines = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
