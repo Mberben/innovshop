@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ProductOptionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductOptionRepository::class)]
 class ProductOption
@@ -14,9 +15,11 @@ class ProductOption
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: 'Le type est obligatoire (ex. Couleur).')]
     private ?string $type = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: 'La valeur est obligatoire (ex. Noir).')]
     private ?string $value = null;
 
     #[ORM\ManyToOne(inversedBy: 'options')]
@@ -62,5 +65,10 @@ class ProductOption
         $this->product = $product;
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->type.' : '.$this->value;
     }
 }

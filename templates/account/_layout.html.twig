@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% set route = app.request.attributes.get('_route') %}
+    <div class="container section-tight">
+        <div class="row g-4">
+            <aside class="col-lg-3">
+                <nav class="account-nav" aria-label="Espace client">
+                    <p class="account-hello">Bonjour {{ app.user.firstName }}</p>
+                    <a href="{{ path('app_account') }}" class="{{ route == 'app_account' ? 'active' }}"><i class="bi bi-grid"></i> Tableau de bord</a>
+                    <a href="{{ path('app_account_orders') }}" class="{{ route starts with 'app_account_order' ? 'active' }}"><i class="bi bi-box-seam"></i> Mes commandes</a>
+                    <a href="{{ path('app_account_profile') }}" class="{{ route == 'app_account_profile' ? 'active' }}"><i class="bi bi-person"></i> Profil et adresse</a>
+                    <a href="{{ path('app_account_password') }}" class="{{ route == 'app_account_password' ? 'active' }}"><i class="bi bi-key"></i> Mot de passe</a>
+                    <a href="{{ path('app_logout') }}"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
+                </nav>
+            </aside>
+            <div class="col-lg-9">
+                {% block account_content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

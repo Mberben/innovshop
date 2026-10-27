@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Erreur{% endblock %}
+
+{% block body %}
+    <div class="container section-tight">
+        <div class="error-page">
+            <p class="error-code">{{ status_code }}</p>
+            <h1 class="page-title">
+                {% if status_code == 404 %}
+                    Cette page n'existe pas
+                {% elseif status_code == 403 %}
+                    Accès refusé
+                {% else %}
+                    Une erreur est survenue
+                {% endif %}
+            </h1>
+            <p class="text-muted">
+                {% if status_code == 404 %}
+                    Le produit ou la page que vous cherchez a peut-être été déplacé ou supprimé.
+                {% elseif status_code == 403 %}
+                    Vous n'avez pas les droits nécessaires pour afficher cette page.
+                {% else %}
+                    Nous avons été prévenus et corrigeons le problème. Réessayez dans quelques instants.
+                {% endif %}
+            </p>
+            <div class="d-flex justify-content-center gap-2 mt-4">
+                <a href="{{ path('app_home') }}" class="btn btn-accent">Retour à l'accueil</a>
+                <a href="{{ path('app_catalogue') }}" class="btn btn-outline-ink">Voir le catalogue</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Tableau de bord{% endblock %}
+
+{% block main %}
+    <style>
+        .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .kpi { border: 1px solid var(--border-color, #e5e7eb); border-radius: 10px; padding: 1rem 1.2rem; }
+        .kpi span { display: block; font-size: .8rem; opacity: .7; font-weight: 600; }
+        .kpi strong { font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+        .chart { display: flex; align-items: flex-end; gap: 6px; height: 180px; padding-top: 10px; border-bottom: 1px solid var(--border-color, #e5e7eb); }
+        .bar { flex: 1; background: #ff5a36; border-radius: 4px 4px 0 0; min-height: 2px; position: relative; }
+        .bar:hover::after { content: attr(data-value); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); font-size: .7rem; white-space: nowrap; background: #141821; color: #fff; padding: 2px 6px; border-radius: 4px; }
+        .chart-labels { display: flex; gap: 6px; font-size: .7rem; opacity: .7; }
+        .chart-labels span { flex: 1; text-align: center; }
+    </style>
+
+    <div class="kpis">
+        <div class="kpi"><span>Ventes (14 jours)</span><strong>{{ revenueTotal|price }}</strong></div>
+        <div class="kpi"><span>Commandes en attente</span><strong>{{ pendingCount }}</strong></div>
+        <div class="kpi"><span>Commandes au total</span><strong>{{ orderCount }}</strong></div>
+        <div class="kpi"><span>Produits</span><strong>{{ productCount }}</strong></div>
+        <div class="kpi"><span>Comptes clients</span><strong>{{ customerCount }}</strong></div>
+    </div>
+
+    <h2 class="h5">Chiffre d'affaires par jour (hors commandes annulées)</h2>
+    <div class="chart" role="img" aria-label="Chiffre d'affaires des 14 derniers jours">
+        {% for day, amount in revenue %}
+            <div class="bar" style="height: {{ (amount / maxDay * 100)|round }}%" data-value="{{ day|date('d/m') }} : {{ amount|price }}"></div>
+        {% endfor %}
+    </div>
+    <div class="chart-labels">
+        {% for day, amount in revenue %}<span>{{ day|date('d/m') }}</span>{% endfor %}
+    </div>
+
+    <h2 class="h5 mt-4">Dernières commandes</h2>
+    <table class="table datagrid">
+        <thead><tr><th>Référence</th><th>Client</th><th>Date</th><th class="text-end">Total</th><th>Statut</th></tr></thead>
+        <tbody>
+            {% for order in lastOrders %}
+                <tr>
+                    <td><a href="{{ ea_url().setController('App\\Controller\\Admin\\OrderCrudController').setAction('detail').setEntityId(order.id) }}">{{ order.reference }}</a></td>
+                    <td>{{ order.user }}</td>
+                    <td>{{ order.createdAt|date('d/m/Y H:i') }}</td>
+                    <td class="text-end">{{ order.total|price }}</td>
+                    <td><span class="badge badge-{{ order.status.color }}">{{ order.status.label }}</span></td>
+                </tr>
+            {% else %}
+                <tr><td colspan="5">Aucune commande.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

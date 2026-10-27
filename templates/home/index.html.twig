@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+    <section class="hero">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <h1 class="hero-title">La technologie qui vous simplifie la vie.</h1>
+                    <p class="hero-lead">Audio, montres, drones, maison connectée : des produits choisis pour leur fiabilité, expédiés sous 48 h.</p>
+                    <div class="d-flex flex-wrap gap-2 mt-4">
+                        <a href="{{ path('app_catalogue') }}" class="btn btn-accent">Découvrir le catalogue</a>
+                        {% if featured is not empty %}
+                            <a href="#a-la-une" class="btn btn-outline-ink">Produits à la une</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    {% set hero = featured|first ?: latest|first %}
+                    {% if hero %}
+                        <a href="{{ path('app_product_show', {slug: hero.slug}) }}" class="hero-visual">
+                            {% if hero.mainImage %}
+                                <img src="{{ asset('uploads/products/' ~ hero.mainImage) }}" alt="{{ hero.name }}">
+                            {% endif %}
+                            <span class="hero-visual-caption">
+                                <span class="small text-uppercase">{{ hero.category ? hero.category.name }}</span>
+                                <strong>{{ hero.name }}</strong>
+                                <span>{{ hero.price|price }}</span>
+                            </span>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container section" id="a-la-une">
+        <div class="section-head">
+            <h2 class="section-title">Produits à la une</h2>
+            <a href="{{ path('app_catalogue') }}" class="link-arrow">Tout le catalogue <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div class="row g-4">
+            {% for product in featured %}
+                <div class="col-sm-6 col-lg-4">{% include '_partials/_product_card.html.twig' %}</div>
+            {% else %}
+                <p class="text-muted">Aucun produit à la une pour le moment.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="container section">
+        <div class="section-head">
+            <h2 class="section-title">Derniers produits ajoutés</h2>
+        </div>
+        <div class="row g-4">
+            {% for product in latest %}
+                <div class="col-sm-6 col-lg-4">{% include '_partials/_product_card.html.twig' %}</div>
+            {% else %}
+                <p class="text-muted">Le catalogue est vide.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="container section">
+        <div class="row g-3 perks">
+            <div class="col-md-4"><div class="perk"><i class="bi bi-truck"></i><div><strong>Livraison en 48 h</strong><span>offerte dès 50 € d'achat</span></div></div></div>
+            <div class="col-md-4"><div class="perk"><i class="bi bi-arrow-repeat"></i><div><strong>30 jours pour changer d'avis</strong><span>retour gratuit</span></div></div></div>
+            <div class="col-md-4"><div class="perk"><i class="bi bi-shield-check"></i><div><strong>Garantie 2 ans</strong><span>sur tous les produits</span></div></div></div>
+        </div>
+    </section>
+{% endblock %}

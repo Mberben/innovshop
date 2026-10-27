@@ -1,0 +1,54 @@
+{% extends 'account/_layout.html.twig' %}
+
+{% block title %}Mon compte{% endblock %}
+
+{% block account_content %}
+    <h1 class="page-title">Tableau de bord</h1>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat"><span class="stat-label">Commandes passées</span><span class="stat-value">{{ orderCount }}</span></div>
+        </div>
+        <div class="col-md-8">
+            {# Objectif de dépenses mensuel (US20) #}
+            {% set goal = app.user.monthlySpendingGoal %}
+            <div class="stat">
+                <span class="stat-label">Dépenses de {{ 'now'|date('m/Y') }}</span>
+                {% if goal %}
+                    {% set percent = goal > 0 ? min(100, (spentThisMonth / goal * 100)|round) : 0 %}
+                    <span class="stat-value">{{ spentThisMonth|price }} <small class="text-muted fw-normal">/ {{ goal|price }}</small></span>
+                    <div class="progress mt-2" role="progressbar" aria-label="Objectif de dépenses" aria-valuenow="{{ percent }}" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar {{ spentThisMonth > goal ? 'bg-danger' : (percent >= 80 ? 'bg-warning' : 'bg-success') }}" style="width: {{ percent }}%"></div>
+                    </div>
+                    <span class="small text-muted mt-1 d-block">
+                        {% if spentThisMonth > goal %}Objectif dépassé de {{ (spentThisMonth - goal)|price }}.{% else %}Il vous reste {{ (goal - spentThisMonth)|price }} ce mois-ci.{% endif %}
+                    </span>
+                {% else %}
+                    <span class="stat-value">{{ spentThisMonth|price }}</span>
+                    <a href="{{ path('app_account_profile') }}" class="small">Définir un objectif de dépenses</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="panel mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="h5 mb-0">Dernières commandes</h2>
+            <a href="{{ path('app_account_orders') }}" class="small">Tout voir</a>
+        </div>
+        {% include 'account/_orders_table.html.twig' with {orders: lastOrders} %}
+    </div>
+
+    <div class="panel">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="h5 mb-0">Mes informations</h2>
+            <a href="{{ path('app_account_profile') }}" class="small">Modifier</a>
+        </div>
+        <dl class="info-list">
+            <div><dt>Nom</dt><dd>{{ app.user.firstName }} {{ app.user.lastName }}</dd></div>
+            <div><dt>Email</dt><dd>{{ app.user.email }}</dd></div>
+            <div><dt>Téléphone</dt><dd>{{ app.user.phone ?: '—' }}</dd></div>
+            <div><dt>Adresse</dt><dd>{% if app.user.address %}{{ app.user.address }}, {{ app.user.postalCode }} {{ app.user.city }}{% else %}—{% endif %}</dd></div>
+        </dl>
+    </div>
+{% endblock %}

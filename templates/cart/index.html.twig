@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon panier{% endblock %}
+
+{% block body %}
+    <div class="container section-tight">
+        {% include '_partials/_checkout_steps.html.twig' with {step: 1} %}
+        <h1 class="page-title">Mon panier</h1>
+
+        {% if lines is empty %}
+            <div class="empty-state">
+                <i class="bi bi-bag"></i>
+                <p>Votre panier est vide.</p>
+                <a href="{{ path('app_catalogue') }}" class="btn btn-accent">Découvrir le catalogue</a>
+            </div>
+        {% else %}
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <ul class="cart-lines" data-cart-lines>
+                        {% for line in lines %}
+                            <li class="cart-line" data-cart-line>
+                                <a href="{{ path('app_product_show', {slug: line.product.slug}) }}" class="cart-line-media">
+                                    {% if line.product.mainImage %}<img src="{{ asset('uploads/products/' ~ line.product.mainImage) }}" alt="">{% endif %}
+                                </a>
+                                <div class="cart-line-info">
+                                    <a href="{{ path('app_product_show', {slug: line.product.slug}) }}" class="fw-semibold">{{ line.product.name }}</a>
+                                    {% if line.option %}<span class="text-muted small d-block">{{ line.option }}</span>{% endif %}
+                                </div>
+                                <span class="price">{{ line.product.price|price }}</span>
+                                <form action="{{ path('app_cart_remove', {lineId: line.id}) }}" method="post" data-cart-remove>
+                                    <input type="hidden" name="_token" value="{{ csrf_token('cart_remove') }}">
+                                    <button type="submit" class="btn btn-sm btn-light" aria-label="Retirer {{ line.product.name }}" title="Retirer"><i class="bi bi-trash3"></i></button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <div class="summary">
+                        <h2 class="h5">Récapitulatif</h2>
+                        <div class="summary-row"><span>Articles</span><span data-cart-count>{{ lines|length }}</span></div>
+                        <div class="summary-row"><span>Livraison</span><span>Offerte</span></div>
+                        <div class="summary-row summary-total"><span>Total TTC</span><span data-cart-total>{{ total|price }}</span></div>
+                        <a href="{{ path('app_checkout_shipping') }}" class="btn btn-accent btn-lg w-100 mt-3">Passer la commande</a>
+                        {% if not app.user %}
+                            <p class="small text-muted mt-2 mb-0">Vous devrez vous connecter ou créer un compte pour commander.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

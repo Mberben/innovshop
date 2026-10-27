@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -17,22 +18,28 @@ class Product
     private ?int $id = null;
 
     #[ORM\Column(length: 150)]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire.')]
+    #[Assert\Length(max: 150)]
     private ?string $name = null;
 
     #[ORM\Column(length: 170)]
     private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: 'La description est obligatoire.')]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $specifications = null;
 
+    /** Prix en centimes */
     #[ORM\Column]
+    #[Assert\NotNull(message: 'Le prix est obligatoire.')]
+    #[Assert\Positive(message: 'Le prix doit être supérieur à 0.')]
     private ?int $price = null;
 
     #[ORM\Column]
-    private ?bool $featured = null;
+    private ?bool $featured = false;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -43,13 +50,13 @@ class Product
     /**
      * @var Collection<int, ProductImage>
      */
-    #[ORM\OneToMany(targetEntity: ProductImage::class, mappedBy: 'product', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: ProductImage::class, mappedBy: 'product', cascade: ['persist'], orphanRemoval: true)]
     private Collection $images;
 
     /**
      * @var Collection<int, ProductOption>
      */
-    #[ORM\OneToMany(targetEntity: ProductOption::class, mappedBy: 'product', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: ProductOption::class, mappedBy: 'product', cascade: ['persist'], orphanRemoval: true)]
     private Collection $options;
 
     /**
@@ -175,6 +182,21 @@ class Product
         return $this->images;
     }
 
+    /**
+     * Nom du fichier de l'image principale (la plus petite position), ou null.
+     */
+    public function getMainImage(): ?string
+    {
+        $main = null;
+        foreach ($this->images as $image) {
+            if (null === $main || $image->getPosition() < $main->getPosition()) {
+                $main = $image;
+            }
+        }
+
+        return $main?->getFilename();
+    }
+
     public function addImage(ProductImage $image): static
     {
         if (!$this->images->contains($image)) {
@@ -255,5 +277,10 @@ class Product
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->name ?? '';
     }
 }

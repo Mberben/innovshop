@@ -1,0 +1,18 @@
+{% extends 'emails/_layout.html.twig' %}
+
+{% block content %}
+    <h1 style="font-size:22px;margin:0 0 12px;">Votre commande {{ order.reference }} est « {{ order.status.label|lower }} »</h1>
+    <p style="margin:0 0 16px;">Bonjour {{ order.user.firstName }},</p>
+    {% if order.status.value == 'shipped' %}
+        <p>Bonne nouvelle : votre colis est en route vers {{ order.shippingCity }}. Il arrivera sous 48 h.</p>
+    {% elseif order.status.value == 'validated' %}
+        <p>Votre commande a été validée et est en cours de préparation.</p>
+    {% elseif order.status.value == 'cancelled' %}
+        <p>Votre commande a été annulée. Pour toute question, répondez simplement à cet email.</p>
+    {% else %}
+        <p>Le statut de votre commande a été mis à jour.</p>
+    {% endif %}
+    <p style="margin:24px 0 0;">
+        <a href="{{ url('app_account_order_show', {reference: order.reference}) }}" style="display:inline-block;background:#ff5a36;color:#ffffff;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:bold;">Voir ma commande</a>
+    </p>
+{% endblock %}

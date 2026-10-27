@@ -1,0 +1,10 @@
+{% extends 'account/_layout.html.twig' %}
+
+{% block title %}Mes commandes{% endblock %}
+
+{% block account_content %}
+    <h1 class="page-title">Mes commandes</h1>
+    <div class="panel">
+        {% include 'account/_orders_table.html.twig' %}
+    </div>
+{% endblock %}

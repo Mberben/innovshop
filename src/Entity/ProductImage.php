@@ -17,7 +17,7 @@ class ProductImage
     private ?string $filename = null;
 
     #[ORM\Column]
-    private ?int $position = null;
+    private ?int $position = 0;
 
     #[ORM\ManyToOne(inversedBy: 'images')]
     #[ORM\JoinColumn(nullable: false)]
@@ -62,5 +62,10 @@ class ProductImage
         $this->product = $product;
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->filename ?? '';
     }
 }

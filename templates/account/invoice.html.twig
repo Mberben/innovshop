@@ -1,0 +1,58 @@
+{# Facture convertie en PDF par Dompdf : CSS simple, pas de Bootstrap #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 11px; color: #1f2430; }
+        h1 { font-size: 22px; margin: 0 0 4px; }
+        .muted { color: #6b7280; }
+        .head { width: 100%; margin-bottom: 30px; }
+        .head td { vertical-align: top; }
+        .brand { font-size: 20px; font-weight: bold; }
+        .brand span { color: #e8461f; }
+        table.lines { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table.lines th { text-align: left; border-bottom: 2px solid #1f2430; padding: 8px 6px; }
+        table.lines td { border-bottom: 1px solid #e5e7eb; padding: 8px 6px; }
+        .right { text-align: right; }
+        .total td { font-weight: bold; font-size: 13px; border-bottom: none; }
+        .footer { margin-top: 40px; font-size: 9px; color: #6b7280; }
+    </style>
+</head>
+<body>
+    <table class="head">
+        <tr>
+            <td>
+                <div class="brand">Innov<span>Shop</span></div>
+                <div class="muted">12 avenue de l'Innovation<br>67000 Strasbourg<br>contact@innovshop.fr</div>
+            </td>
+            <td class="right">
+                <h1>Facture</h1>
+                <div>N° {{ order.reference }}</div>
+                <div class="muted">Date : {{ order.createdAt|date('d/m/Y') }}</div>
+                <div class="muted">Statut : {{ order.status.label }}</div>
+            </td>
+        </tr>
+    </table>
+
+    <strong>Livré à</strong><br>
+    {{ order.shippingName }}<br>
+    {{ order.shippingAddress }}<br>
+    {{ order.shippingPostalCode }} {{ order.shippingCity }}<br>
+    {{ order.shippingPhone }}
+
+    <table class="lines">
+        <thead><tr><th>Désignation</th><th>Option</th><th class="right">Prix TTC</th></tr></thead>
+        <tbody>
+            {% for line in order.orderLines %}
+                <tr><td>{{ line.productName }}</td><td>{{ line.optionLabel ?: '—' }}</td><td class="right">{{ line.price|price }}</td></tr>
+            {% endfor %}
+            <tr><td colspan="2">Livraison</td><td class="right">Offerte</td></tr>
+            <tr class="total"><td colspan="2">Total TTC</td><td class="right">{{ order.total|price }}</td></tr>
+            <tr><td colspan="2" class="muted">dont TVA (20 %)</td><td class="right muted">{{ (order.total - (order.total / 1.2)|round)|price }}</td></tr>
+        </tbody>
+    </table>
+
+    <p class="footer">InnovShop · Projet de formation · Document généré automatiquement.</p>
+</body>
+</html>

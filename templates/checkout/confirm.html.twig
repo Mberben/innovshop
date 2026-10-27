@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmation{% endblock %}
+
+{% block body %}
+    <div class="container section-tight">
+        {% include '_partials/_checkout_steps.html.twig' with {step: 3} %}
+        <h1 class="page-title">Vérifiez et confirmez</h1>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="panel mb-4">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h2 class="h5">Livraison</h2>
+                        <a href="{{ path('app_checkout_shipping') }}" class="small">Modifier</a>
+                    </div>
+                    <address class="mb-0">
+                        <strong>{{ shipping.shippingName }}</strong><br>
+                        {{ shipping.shippingAddress }}<br>
+                        {{ shipping.shippingPostalCode }} {{ shipping.shippingCity }}<br>
+                        <span class="text-muted">{{ shipping.shippingPhone }}</span>
+                    </address>
+                </div>
+
+                <div class="panel">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h2 class="h5">Articles</h2>
+                        <a href="{{ path('app_cart') }}" class="small">Modifier</a>
+                    </div>
+                    <ul class="cart-lines cart-lines-compact">
+                        {% for line in lines %}
+                            <li class="cart-line">
+                                <span class="cart-line-media">{% if line.product.mainImage %}<img src="{{ asset('uploads/products/' ~ line.product.mainImage) }}" alt="">{% endif %}</span>
+                                <div class="cart-line-info">
+                                    <span class="fw-semibold">{{ line.product.name }}</span>
+                                    {% if line.option %}<span class="text-muted small d-block">{{ line.option }}</span>{% endif %}
+                                </div>
+                                <span class="price">{{ line.product.price|price }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="summary">
+                    <h2 class="h5">Total</h2>
+                    <div class="summary-row"><span>Articles ({{ lines|length }})</span><span>{{ total|price }}</span></div>
+                    <div class="summary-row"><span>Livraison</span><span>Offerte</span></div>
+                    <div class="summary-row summary-total"><span>Total TTC</span><span>{{ total|price }}</span></div>
+                    <form action="{{ path('app_checkout_place') }}" method="post" class="mt-3">
+                        <input type="hidden" name="_token" value="{{ csrf_token('checkout_place') }}">
+                        <button type="submit" class="btn btn-accent btn-lg w-100">Confirmer la commande</button>
+                    </form>
+                    <p class="small text-muted mt-2 mb-0">Aucun paiement en ligne dans cette version : la commande est enregistrée « en attente ».</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

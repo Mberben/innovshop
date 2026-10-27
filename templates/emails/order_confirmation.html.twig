@@ -1,0 +1,24 @@
+{% extends 'emails/_layout.html.twig' %}
+
+{% block content %}
+    <h1 style="font-size:22px;margin:0 0 12px;">Merci pour votre commande, {{ order.user.firstName }} !</h1>
+    <p style="margin:0 0 20px;">Votre commande <strong>{{ order.reference }}</strong> du {{ order.createdAt|date('d/m/Y') }} est bien enregistrée. Nous vous préviendrons à chaque étape.</p>
+
+    <table role="presentation" width="100%" cellpadding="8" cellspacing="0" style="border-collapse:collapse;font-size:14px;">
+        <tr style="border-bottom:2px solid #1f2430;"><th align="left">Article</th><th align="right">Prix</th></tr>
+        {% for line in order.orderLines %}
+            <tr style="border-bottom:1px solid #e5e7eb;">
+                <td>{{ line.productName }}{% if line.optionLabel %}<br><span style="color:#6b7280;font-size:12px;">{{ line.optionLabel }}</span>{% endif %}</td>
+                <td align="right">{{ line.price|price }}</td>
+            </tr>
+        {% endfor %}
+        <tr><td><strong>Total TTC</strong></td><td align="right"><strong>{{ order.total|price }}</strong></td></tr>
+    </table>
+
+    <h2 style="font-size:16px;margin:24px 0 8px;">Adresse de livraison</h2>
+    <p style="margin:0;">{{ order.shippingName }}<br>{{ order.shippingAddress }}<br>{{ order.shippingPostalCode }} {{ order.shippingCity }}</p>
+
+    <p style="margin:28px 0 0;">
+        <a href="{{ url('app_account_order_show', {reference: order.reference}) }}" style="display:inline-block;background:#ff5a36;color:#ffffff;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:bold;">Suivre ma commande</a>
+    </p>
+{% endblock %}

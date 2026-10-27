@@ -110,4 +110,14 @@ class OrderLine
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        $label = $this->productName;
+        if ($this->optionLabel) {
+            $label .= ' ('.$this->optionLabel.')';
+        }
+
+        return $label.' — '.number_format(($this->price ?? 0) / 100, 2, ',', ' ').' €';
+    }
 }

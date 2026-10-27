@@ -1,0 +1,8 @@
+{# Indicateur des 3 étapes de commande #}
+<ol class="checkout-steps" aria-label="Étapes de la commande">
+    {% for n, label in {1: 'Panier', 2: 'Livraison', 3: 'Confirmation'} %}
+        <li class="{{ n < step ? 'done' : (n == step ? 'current' : '') }}" {% if n == step %}aria-current="step"{% endif %}>
+            <span class="checkout-step-num">{% if n < step %}<i class="bi bi-check-lg"></i>{% else %}{{ n }}{% endif %}</span>{{ label }}
+        </li>
+    {% endfor %}
+</ol>

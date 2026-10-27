@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Livraison{% endblock %}
+
+{% block body %}
+    <div class="container section-tight">
+        {% include '_partials/_checkout_steps.html.twig' with {step: 2} %}
+        <h1 class="page-title">Adresse de livraison</h1>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="panel">
+                    {{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
+                        {{ form_row(form.shippingName) }}
+                        {{ form_row(form.shippingAddress) }}
+                        <div class="row">
+                            <div class="col-sm-4">{{ form_row(form.shippingPostalCode) }}</div>
+                            <div class="col-sm-8">{{ form_row(form.shippingCity) }}</div>
+                        </div>
+                        {{ form_row(form.shippingPhone) }}
+                        {{ form_row(form.saveAddress) }}
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <a href="{{ path('app_cart') }}" class="btn btn-link px-0"><i class="bi bi-arrow-left"></i> Retour au panier</a>
+                            <button type="submit" class="btn btn-accent btn-lg">Continuer</button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="summary">
+                    <h2 class="h5">Votre commande</h2>
+                    <div class="summary-row"><span>Articles</span><span>{{ count }}</span></div>
+                    <div class="summary-row"><span>Livraison</span><span>Offerte</span></div>
+                    <div class="summary-row summary-total"><span>Total TTC</span><span>{{ total|price }}</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

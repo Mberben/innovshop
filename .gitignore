@@ -18,3 +18,8 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+###> uploads ###
+/public/uploads/products/*
+!/public/uploads/products/.gitkeep
+###< uploads ###

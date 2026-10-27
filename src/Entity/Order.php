@@ -7,6 +7,7 @@ use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
@@ -27,18 +28,28 @@ class Order
     private ?int $total = null;
 
     #[ORM\Column(length: 200)]
+    #[Assert\NotBlank(message: 'Indiquez le nom du destinataire.')]
+    #[Assert\Length(max: 200)]
     private ?string $shippingName = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $shippingAdress = null;
+    #[Assert\NotBlank(message: 'Indiquez l\'adresse de livraison.')]
+    #[Assert\Length(max: 255)]
+    private ?string $shippingAddress = null;
 
     #[ORM\Column(length: 10)]
+    #[Assert\NotBlank(message: 'Indiquez le code postal.')]
+    #[Assert\Regex(pattern: '/^\d{5}$/', message: 'Le code postal doit contenir 5 chiffres.')]
     private ?string $shippingPostalCode = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: 'Indiquez la ville.')]
+    #[Assert\Length(max: 100)]
     private ?string $shippingCity = null;
 
     #[ORM\Column(length: 20)]
+    #[Assert\NotBlank(message: 'Indiquez un numéro de téléphone pour le livreur.')]
+    #[Assert\Regex(pattern: '/^(\+33|0)[1-9](\s?\d{2}){4}$/', message: 'Numéro de téléphone invalide (ex. 06 12 34 56 78).')]
     private ?string $shippingPhone = null;
 
     #[ORM\Column]
@@ -51,7 +62,7 @@ class Order
     /**
      * @var Collection<int, OrderLine>
      */
-    #[ORM\OneToMany(targetEntity: OrderLine::class, mappedBy: 'customerOrder', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: OrderLine::class, mappedBy: 'customerOrder', cascade: ['persist'], orphanRemoval: true)]
     private Collection $orderLines;
 
     public function __construct()
@@ -113,14 +124,14 @@ class Order
         return $this;
     }
 
-    public function getShippingAdress(): ?string
+    public function getShippingAddress(): ?string
     {
-        return $this->shippingAdress;
+        return $this->shippingAddress;
     }
 
-    public function setShippingAdress(string $shippingAdress): static
+    public function setShippingAddress(string $shippingAddress): static
     {
-        $this->shippingAdress = $shippingAdress;
+        $this->shippingAddress = $shippingAddress;
 
         return $this;
     }
@@ -213,5 +224,10 @@ class Order
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->reference ?? '';
     }
 }

@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.name }}{% endblock %}
+{% block meta_description %}{{ product.description|slice(0, 150) }}{% endblock %}
+
+{% block body %}
+    <div class="container section-tight">
+        <nav aria-label="Fil d'Ariane">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_catalogue') }}">Catalogue</a></li>
+                {% if product.category %}
+                    <li class="breadcrumb-item"><a href="{{ path('app_catalogue', {categorie: product.category.slug}) }}">{{ product.category.name }}</a></li>
+                {% endif %}
+                <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+            </ol>
+        </nav>
+
+        <div class="row g-5">
+            {# Galerie : image principale + miniatures (assets/gallery.js) #}
+            <div class="col-lg-7">
+                {% set images = product.images|sort((a, b) => a.position <=> b.position) %}
+                <div class="gallery" data-gallery>
+                    <div class="gallery-main">
+                        {% if images is not empty %}
+                            <img src="{{ asset('uploads/products/' ~ (images|first).filename) }}" alt="{{ product.name }}" data-gallery-main>
+                        {% else %}
+                            <span class="product-card-placeholder"><i class="bi bi-image"></i></span>
+                        {% endif %}
+                    </div>
+                    {% if images|length > 1 %}
+                        <div class="gallery-thumbs">
+                            {% for image in images %}
+                                <button type="button" class="gallery-thumb {{ loop.first ? 'active' }}" data-gallery-thumb="{{ asset('uploads/products/' ~ image.filename) }}" aria-label="Image {{ loop.index }}">
+                                    <img src="{{ asset('uploads/products/' ~ image.filename) }}" alt="">
+                                </button>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="product-panel">
+                    {% if product.category %}<p class="product-card-category mb-2">{{ product.category.name }}</p>{% endif %}
+                    <h1 class="product-title">{{ product.name }}</h1>
+                    {% if product.featured %}<span class="tag tag-featured position-static">À la une</span>{% endif %}
+                    <p class="product-price">{{ product.price|price }} <span class="small text-muted fw-normal">TTC</span></p>
+                    <p class="lead-sm">{{ product.description }}</p>
+
+                    {% include '_partials/_add_to_cart.html.twig' with {product: product} %}
+
+                    <ul class="product-assurances">
+                        <li><i class="bi bi-truck"></i> Expédié sous 48 h</li>
+                        <li><i class="bi bi-shield-check"></i> Garantie 2 ans</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        {% if product.specifications %}
+            <section class="section">
+                <h2 class="section-title">Caractéristiques</h2>
+                <dl class="specs">
+                    {% for spec in product.specifications|split("\n") %}
+                        {% set parts = spec|split(':', 2) %}
+                        {% if parts|length == 2 %}
+                            <div class="specs-row"><dt>{{ parts[0]|trim }}</dt><dd>{{ parts[1]|trim }}</dd></div>
+                        {% elseif spec|trim %}
+                            <div class="specs-row"><dt>{{ spec|trim }}</dt><dd></dd></div>
+                        {% endif %}
+                    {% endfor %}
+                </dl>
+            </section>
+        {% endif %}
+
+        {% if related is not empty %}
+            <section class="section">
+                <h2 class="section-title">Dans la même catégorie</h2>
+                <div class="row g-4">
+                    {% for product in related %}
+                        <div class="col-sm-6 col-lg-4">{% include '_partials/_product_card.html.twig' %}</div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+    </div>
+{% endblock %}

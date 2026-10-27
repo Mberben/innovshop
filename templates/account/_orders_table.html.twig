@@ -1,0 +1,21 @@
+{% if orders is empty %}
+    <p class="text-muted mb-0">Aucune commande pour le moment. <a href="{{ path('app_catalogue') }}">Découvrir le catalogue</a></p>
+{% else %}
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead><tr><th>Référence</th><th>Date</th><th>Articles</th><th class="text-end">Total</th><th>Statut</th><th></th></tr></thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td class="fw-semibold">{{ order.reference }}</td>
+                        <td>{{ order.createdAt|date('d/m/Y') }}</td>
+                        <td>{{ order.orderLines|length }}</td>
+                        <td class="text-end tabular">{{ order.total|price }}</td>
+                        <td>{% include 'account/_status_badge.html.twig' with {status: order.status} %}</td>
+                        <td class="text-end"><a href="{{ path('app_account_order_show', {reference: order.reference}) }}" class="btn btn-sm btn-outline-ink">Détail</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}

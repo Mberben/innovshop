@@ -1,21 +1,27 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Créer un compte{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+    <div class="container section-tight">
+        <div class="auth-card">
+            <h1 class="page-title">Créer un compte</h1>
+            <p class="text-muted">Un compte vous permet de commander et de suivre vos livraisons.</p>
 
-    {{ form_errors(registrationForm) }}
+            {{ form_errors(registrationForm) }}
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.firstName) }}
-        {{ form_row(registrationForm.lastName) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+            {{ form_start(registrationForm, {attr: {novalidate: 'novalidate'}}) }}
+                <div class="row">
+                    <div class="col-sm-6">{{ form_row(registrationForm.firstName) }}</div>
+                    <div class="col-sm-6">{{ form_row(registrationForm.lastName) }}</div>
+                </div>
+                {{ form_row(registrationForm.email, {label: 'Email'}) }}
+                {{ form_row(registrationForm.plainPassword, {label: 'Mot de passe', help: '8 caractères minimum.'}) }}
+                {{ form_row(registrationForm.agreeTerms, {label: "J'accepte les conditions générales de vente"}) }}
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+                <button type="submit" class="btn btn-accent btn-lg w-100">Créer mon compte</button>
+            {{ form_end(registrationForm) }}
+            <p class="text-center mt-3 mb-0">Déjà inscrit ? <a href="{{ path('app_login') }}">Se connecter</a></p>
+        </div>
+    </div>
 {% endblock %}

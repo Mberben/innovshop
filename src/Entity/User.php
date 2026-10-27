@@ -49,6 +49,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $lastName = null;
 
     #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\Regex(pattern: '/^(\+33|0)[1-9](\s?\d{2}){4}$/', message: 'Numéro de téléphone invalide (ex. 06 12 34 56 78).')]
     private ?string $phone = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -280,5 +281,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return trim($this->firstName.' '.$this->lastName);
     }
 }

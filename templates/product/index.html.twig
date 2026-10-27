@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catalogue{% endblock %}
+
+{% block body %}
+    <div class="container section-tight">
+        <div class="page-head">
+            <h1 class="page-title">Catalogue</h1>
+            <p class="text-muted mb-0">{{ products|length }} produit{{ products|length > 1 ? 's' }}{% if filters.q %} pour « {{ filters.q }} »{% endif %}</p>
+        </div>
+
+        <div class="row g-4">
+            {# Filtres : formulaire GET, les critères restent dans l'URL (partageable) #}
+            <aside class="col-lg-3">
+                <form method="get" action="{{ path('app_catalogue') }}" class="filters">
+                    <div class="mb-3">
+                        <label for="f-q" class="form-label">Recherche</label>
+                        <input type="search" id="f-q" name="q" class="form-control" value="{{ filters.q }}" placeholder="Nom, description…">
+                    </div>
+                    <div class="mb-3">
+                        <label for="f-cat" class="form-label">Catégorie</label>
+                        <select id="f-cat" name="categorie" class="form-select">
+                            <option value="">Toutes</option>
+                            {% for category in categories %}
+                                <option value="{{ category.slug }}" {{ filters.categorie == category.slug ? 'selected' }}>{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <span class="form-label d-block">Prix (€)</span>
+                        <div class="d-flex gap-2">
+                            <input type="number" min="0" name="min" class="form-control" placeholder="Min" value="{{ filters.min }}" aria-label="Prix minimum">
+                            <input type="number" min="0" name="max" class="form-control" placeholder="Max" value="{{ filters.max }}" aria-label="Prix maximum">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="f-tri" class="form-label">Trier par</label>
+                        <select id="f-tri" name="tri" class="form-select">
+                            {% for value, label in {recent: 'Nouveautés', price_asc: 'Prix croissant', price_desc: 'Prix décroissant', name: 'Nom (A → Z)'} %}
+                                <option value="{{ value }}" {{ filters.tri == value ? 'selected' }}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-ink w-100">Appliquer</button>
+                    <a href="{{ path('app_catalogue') }}" class="btn btn-link w-100 mt-1">Réinitialiser</a>
+                </form>
+            </aside>
+
+            <div class="col-lg-9">
+                <div class="row g-4">
+                    {% for product in products %}
+                        <div class="col-sm-6 col-xl-4">{% include '_partials/_product_card.html.twig' %}</div>
+                    {% else %}
+                        <div class="col-12">
+                            <div class="empty-state">
+                                <i class="bi bi-search"></i>
+                                <p>Aucun produit ne correspond à votre recherche.</p>
+                                <a href="{{ path('app_catalogue') }}" class="btn btn-outline-ink">Voir tout le catalogue</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
