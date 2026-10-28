@@ -7,9 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Validator\MaxFeatured;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[MaxFeatured(max: 3)]
 class Product
 {
     #[ORM\Id]
@@ -180,6 +182,23 @@ class Product
     public function getImages(): Collection
     {
         return $this->images;
+    }
+
+    /**
+     * Image à afficher pour une option donnée (ex. la version blanche),
+     * sinon l'image principale du produit.
+     */
+    public function getImageFor(?ProductOption $option): ?string
+    {
+        if ($option) {
+            foreach ($this->images as $image) {
+                if ($image->getProductOption() === $option) {
+                    return $image->getFilename();
+                }
+            }
+        }
+
+        return $this->getMainImage();
     }
 
     /**

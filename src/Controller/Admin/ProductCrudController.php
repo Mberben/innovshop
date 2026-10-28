@@ -45,7 +45,10 @@ class ProductCrudController extends AbstractCrudController
         yield AssociationField::new('category', 'Catégorie');
         // Le prix est stocké en centimes : MoneyField fait la conversion tout seul
         yield MoneyField::new('price', 'Prix')->setCurrency('EUR');
-        yield BooleanField::new('featured', 'À la une');
+        yield BooleanField::new('featured', 'À la une')
+            // pas d'interrupteur dans la liste : la limite de 3 est vérifiée dans le formulaire
+            ->renderAsSwitch(false)
+            ->setHelp('3 produits maximum à la une (affichés sur la page d\'accueil).');
         yield TextareaField::new('description', 'Description')->hideOnIndex();
         yield TextareaField::new('specifications', 'Spécifications')->hideOnIndex();
 

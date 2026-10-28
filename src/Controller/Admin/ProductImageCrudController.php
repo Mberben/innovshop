@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\ProductImage;
+use App\Entity\ProductOption;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -39,6 +40,10 @@ class ProductImageCrudController extends AbstractCrudController
             ->setUploadedFileNamePattern('[randomhash].[extension]')
             // obligatoire à la création, facultatif en modification
             ->setRequired(Crud::PAGE_NEW === $pageName);
+        yield AssociationField::new('productOption', 'Option illustrée')
+            ->setRequired(false)
+            ->setFormTypeOption('choice_label', static fn (ProductOption $o) => $o->getProduct()?->getName().' — '.$o)
+            ->setHelp('Facultatif : l\'image s\'affichera quand le client choisira cette option (ex. couleur Blanc).');
         yield IntegerField::new('position', 'Ordre')
             ->setHelp('0 = image principale, puis 1, 2, 3…');
     }
