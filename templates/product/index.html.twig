@@ -36,7 +36,7 @@
                     <div class="mb-3">
                         <label for="f-tri" class="form-label">Trier par</label>
                         <select id="f-tri" name="tri" class="form-select">
-                            {% for value, label in {recent: 'Nouveautés', price_asc: 'Prix croissant', price_desc: 'Prix décroissant', name: 'Nom (A → Z)'} %}
+                            {% for value, label in {recent: 'Nouveautés', price_asc: 'Prix croissant', price_desc: 'Prix décroissant'} %}
                                 <option value="{{ value }}" {{ filters.tri == value ? 'selected' }}>{{ label }}</option>
                             {% endfor %}
                         </select>

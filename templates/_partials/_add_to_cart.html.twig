@@ -10,10 +10,11 @@
     {% if product.options is not empty %}
         {% set uid = 'opt-' ~ product.id ~ (compact ? '-c' : '') %}
         <label for="{{ uid }}" class="{{ compact ? 'visually-hidden' : 'form-label fw-semibold' }}">{{ product.options.first.type }}</label>
-        <select id="{{ uid }}" name="option" class="form-select {{ compact ? 'form-select-sm' : '' }}" required>
+        <select id="{{ uid }}" name="option" data-option-select class="form-select {{ compact ? 'form-select-sm' : '' }}" required>
             {% if not compact %}<option value="">Choisir…</option>{% endif %}
             {% for option in product.options %}
-                <option value="{{ option.id }}">{{ compact ? option.value : option.type ~ ' : ' ~ option.value }}</option>
+                {% set optionImage = product.imageFor(option) %}
+                <option value="{{ option.id }}" {% if optionImage %}data-image="{{ asset('uploads/products/' ~ optionImage) }}"{% endif %}>{{ compact ? option.value : option.type ~ ' : ' ~ option.value }}</option>
             {% endfor %}
         </select>
     {% endif %}

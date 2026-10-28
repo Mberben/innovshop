@@ -88,4 +88,34 @@ document.addEventListener('click', (event) => {
     const gallery = thumb.closest('[data-gallery]');
     gallery.querySelector('[data-gallery-main]').src = thumb.dataset.galleryThumb;
     gallery.querySelectorAll('[data-gallery-thumb]').forEach((t) => t.classList.toggle('active', t === thumb));
+
+    // Synchronisation inverse : la photo cliquée sélectionne l'option correspondante (ex. Rouge)
+    const select = document.querySelector('[data-option-select]');
+    if (select) {
+        const match = Array.from(select.options).find((o) => o.dataset.image === thumb.dataset.galleryThumb);
+        if (match) {
+            select.value = match.value;
+        }
+    }
 });
+
+// Fiche produit : choisir une option (ex. couleur Blanc) affiche la photo correspondante
+document.addEventListener('change', (event) => {
+    const select = event.target.closest('[data-option-select]');
+    const gallery = document.querySelector('[data-gallery]');
+    if (!select || !gallery) {
+        return;
+    }
+    const image = select.selectedOptions[0]?.dataset.image;
+    if (!image) {
+        return;
+    }
+    gallery.querySelector('[data-gallery-main]').src = image;
+    gallery.querySelectorAll('[data-gallery-thumb]').forEach((t) => t.classList.toggle('active', t.dataset.galleryThumb === image));
+});
+
+// Au chargement (ou retour arrière du navigateur), l'image suit l'option déjà sélectionnée
+const initialSelect = document.querySelector('[data-option-select]');
+if (initialSelect && initialSelect.value) {
+    initialSelect.dispatchEvent(new Event('change', { bubbles: true }));
+}

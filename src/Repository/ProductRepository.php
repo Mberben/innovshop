@@ -57,7 +57,6 @@ class ProductRepository extends ServiceEntityRepository
         match ($sort) {
             'price_asc' => $qb->orderBy('p.price', 'ASC'),
             'price_desc' => $qb->orderBy('p.price', 'DESC'),
-            'name' => $qb->orderBy('p.name', 'ASC'),
             default => $qb->orderBy('p.createdAt', 'DESC'),
         };
 

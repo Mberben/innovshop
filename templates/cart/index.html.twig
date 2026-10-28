@@ -20,7 +20,7 @@
                         {% for line in lines %}
                             <li class="cart-line" data-cart-line>
                                 <a href="{{ path('app_product_show', {slug: line.product.slug}) }}" class="cart-line-media">
-                                    {% if line.product.mainImage %}<img src="{{ asset('uploads/products/' ~ line.product.mainImage) }}" alt="">{% endif %}
+                                    {% set img = line.product.imageFor(line.option) %}{% if img %}<img src="{{ asset('uploads/products/' ~ img) }}" alt="">{% endif %}
                                 </a>
                                 <div class="cart-line-info">
                                     <a href="{{ path('app_product_show', {slug: line.product.slug}) }}" class="fw-semibold">{{ line.product.name }}</a>
