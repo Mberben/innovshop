@@ -23,3 +23,7 @@
 /public/uploads/products/*
 !/public/uploads/products/.gitkeep
 ###< uploads ###
+
+# Photos d origine (avant compression), non versionnees
+/fixtures/originals/
+/fixtures/contact.jpg

@@ -39,27 +39,27 @@ class AppFixtures extends Fixture
         ['audio', 'Écouteurs Pulse Air', 12990, true,
             'Écouteurs sans fil à réduction de bruit active, pensés pour la ville comme pour le sport.',
             "Autonomie : 8 h (32 h avec l'étui)\nBluetooth 5.3\nRésistance IPX4\nRecharge sans fil",
-            ['Couleur' => ['Noir', 'Blanc', 'Bleu nuit']]],
+            ['Couleur' => ['Noir', 'Blanc']]],
         ['audio', 'Casque Nova 360', 24990, false,
             'Casque circum-auriculaire avec son spatial et coussinets à mémoire de forme.',
             "Autonomie : 40 h\nRéduction de bruit adaptative\nCâble USB-C audio inclus\nPoids : 250 g",
-            ['Couleur' => ['Graphite', 'Sable']]],
+            []],
         ['audio', 'Enceinte Echo Mini', 7990, false,
             'Enceinte portable étanche au son étonnamment ample pour sa taille.',
             "Autonomie : 12 h\nÉtanchéité IP67\nAppairage stéréo de deux enceintes",
-            ['Couleur' => ['Noir', 'Rouge', 'Vert sauge']]],
+            ['Couleur' => ['Noir', 'Rouge']]],
         ['montres', 'Montre Vita Sport', 19990, true,
             'Montre connectée orientée sport : GPS intégré, suivi cardiaque continu et plus de 100 activités.',
             "Écran AMOLED 1,4\"\nGPS bi-fréquence\nAutonomie : 10 jours\nÉtanche 5 ATM",
-            ['Taille du boîtier' => ['42 mm', '46 mm'], 'Bracelet' => ['Silicone noir', 'Nylon vert']]],
+            ['Taille du boîtier' => ['42 mm', '46 mm']]],
         ['montres', 'Montre Lumen Classic', 29990, false,
             "Une montre connectée au look classique, boîtier en acier et verre saphir.",
             "Boîtier acier inoxydable\nVerre saphir\nPaiement sans contact\nAutonomie : 7 jours",
-            ['Bracelet' => ['Cuir marron', 'Maille acier']]],
+            []],
         ['montres', 'Bracelet Fit Band 3', 5990, false,
             "Bracelet d'activité léger : pas, sommeil, fréquence cardiaque et notifications.",
             "Autonomie : 14 jours\nÉtanche 5 ATM\nPoids : 22 g",
-            ['Couleur' => ['Noir', 'Rose', 'Bleu']]],
+            []],
         ['drones', 'Drone SkyLite 4K', 49990, true,
             'Drone compact de moins de 250 g qui filme en 4K stabilisée sur 3 axes.',
             "Vidéo 4K 30 i/s\nNacelle 3 axes\nAutonomie : 34 min\nPortée : 10 km",
@@ -67,23 +67,23 @@ class AppFixtures extends Fixture
         ['drones', 'Drone Hawk Pro', 99990, false,
             'Drone professionnel avec capteur 1 pouce et détection d\'obstacles omnidirectionnelle.',
             "Capteur 1\" 20 MP\nVidéo 5,4K\nDétection d'obstacles 360°\nAutonomie : 42 min",
-            ['Pack' => ['Standard', 'Fly More']]],
+            []],
         ['drones', 'Mini drone Pixie', 8990, false,
             "Mini drone d'initiation, idéal pour apprendre à piloter en intérieur.",
             "Caméra HD 720p\nAutonomie : 8 min\nProtections d'hélices incluses",
-            ['Couleur' => ['Jaune', 'Bleu']]],
+            []],
         ['lunettes', 'Lunettes Vision AR', 59990, false,
             'Lunettes de réalité augmentée qui affichent vos notifications et itinéraires dans votre champ de vision.',
             "Affichage micro-OLED\nCaméra 12 MP\nAutonomie : 6 h\nCompatible verres correcteurs",
-            ['Monture' => ['Noire', 'Écaille']]],
+            []],
         ['lunettes', 'Lunettes Sound Shades', 17990, false,
             'Lunettes de soleil avec haut-parleurs intégrés dans les branches.',
             "Verres polarisés UV400\nAutonomie audio : 5 h\nMicro pour les appels",
-            ['Monture' => ['Noire mate', 'Transparente']]],
+            []],
         ['maison', 'Ampoule connectée Glow', 2490, false,
             "Ampoule LED connectée de 16 millions de couleurs, pilotable à la voix ou depuis l'application.",
             "Culot E27\n1100 lumens\nWi-Fi, sans passerelle",
-            ['Pack' => ['1 ampoule', '3 ampoules']]],
+            []],
         ['maison', 'Caméra Guard 2K', 8990, false,
             'Caméra de sécurité intérieure 2K avec vision nocturne et détection de personnes.',
             "Résolution 2K\nVision nocturne 10 m\nAudio bidirectionnel\nStockage microSD ou cloud",
@@ -91,7 +91,7 @@ class AppFixtures extends Fixture
         ['maison', 'Thermostat Eco Smart', 14990, false,
             'Thermostat intelligent qui apprend vos habitudes pour réduire votre facture de chauffage.',
             "Écran tactile couleur\nCompatible chaudières gaz et pompes à chaleur\nSuivi de consommation",
-            ['Couleur' => ['Blanc', 'Noir']]],
+            []],
         ['audio', 'Barre de son Cinema S', 34990, false,
             'Barre de son Dolby Atmos avec caisson de basses sans fil pour un vrai son de cinéma.',
             "Dolby Atmos 5.1.2\nCaisson sans fil\nHDMI eARC",
@@ -103,6 +103,8 @@ class AppFixtures extends Fixture
         private readonly SluggerInterface $slugger,
         #[Autowire('%kernel.project_dir%/public/uploads/products')]
         private readonly string $uploadDir,
+        #[Autowire('%kernel.project_dir%/fixtures/images')]
+        private readonly string $photoDir,
     ) {
     }
 
@@ -141,11 +143,31 @@ class AppFixtures extends Fixture
                 }
             }
 
-            // Image de démonstration (SVG généré) : à remplacer par de vraies photos dans l'admin
-            [, $from, $to] = self::CATEGORIES[$catKey];
-            $filename = 'demo-'.$product->getSlug().'.svg';
-            file_put_contents($this->uploadDir.'/'.$filename, $this->placeholderSvg($name, $categories[$catKey]->getName(), $from, $to));
-            $product->addImage((new ProductImage())->setFilename($filename)->setPosition(0));
+            // Photos : fixtures/images/<slug>.jpg (puis <slug>-2.jpg, <slug>-3.jpg… pour la galerie).
+            // Si aucune photo n'est fournie, une image de démonstration SVG est générée.
+            $photos = $this->findPhotos((string) $product->getSlug());
+            if ($photos) {
+                foreach ($photos as $position => $photo) {
+                    $filename = 'demo-'.basename($photo);
+                    copy($photo, $this->uploadDir.'/'.$filename);
+                    $product->addImage((new ProductImage())->setFilename($filename)->setPosition($position));
+                }
+                // Photos propres à une option : <slug>--<valeur>.jpg (ex. ecouteurs-pulse-air--blanc.jpg)
+                $position = \count($photos);
+                foreach ($product->getOptions() as $option) {
+                    $optionSlug = $this->slugger->slug((string) $option->getValue())->lower();
+                    foreach (glob($this->photoDir.'/'.$product->getSlug().'--'.$optionSlug.'.{jpg,jpeg,png,webp}', \GLOB_BRACE) ?: [] as $photo) {
+                        $filename = 'demo-'.basename($photo);
+                        copy($photo, $this->uploadDir.'/'.$filename);
+                        $product->addImage((new ProductImage())->setFilename($filename)->setPosition($position++)->setProductOption($option));
+                    }
+                }
+            } else {
+                [, $from, $to] = self::CATEGORIES[$catKey];
+                $filename = 'demo-'.$product->getSlug().'.svg';
+                file_put_contents($this->uploadDir.'/'.$filename, $this->placeholderSvg($name, $categories[$catKey]->getName(), $from, $to));
+                $product->addImage((new ProductImage())->setFilename($filename)->setPosition(0));
+            }
 
             $manager->persist($product);
             $products[] = $product;
@@ -222,6 +244,23 @@ class AppFixtures extends Fixture
         }
 
         $manager->flush();
+    }
+
+    /**
+     * Photos fournies pour un produit, image principale en premier.
+     *
+     * @return list<string>
+     */
+    private function findPhotos(string $slug): array
+    {
+        if (!is_dir($this->photoDir)) {
+            return [];
+        }
+        $main = glob($this->photoDir.'/'.$slug.'.{jpg,jpeg,png,webp}', \GLOB_BRACE) ?: [];
+        $others = glob($this->photoDir.'/'.$slug.'-[0-9].{jpg,jpeg,png,webp}', \GLOB_BRACE) ?: [];
+        sort($others);
+
+        return array_values(array_merge($main, $others));
     }
 
     private function placeholderSvg(string $title, string $subtitle, string $from, string $to): string
