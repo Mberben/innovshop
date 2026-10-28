@@ -2,7 +2,7 @@
 
 Plateforme e-commerce de produits technologiques, développée avec **Symfony 8** dans le cadre d'un projet de formation.
 
-- **Site en ligne :** _à compléter après déploiement_
+- **Site en ligne :** https://berben.alwaysdata.net/innovshop/
 - **Tableau Kanban :** _lien Trello à compléter_
 
 ## Fonctionnalités
